@@ -44,6 +44,6 @@ for (i in files) {
 
 `Established organellar Markers` <-`Established organellar Markers`[,c(1:5,8:9,16:21)]
 
-
+write.xlsx(`Established organellar Markers`, "./../Project_Output/Filtered Markers for Chromatome validation.xlsx")
 ```
 
