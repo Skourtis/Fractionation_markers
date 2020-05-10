@@ -1,0 +1,49 @@
+---
+title: "Fractionation_Markers"
+output: html_notebook
+---
+
+
+
+```{r library_loading} 
+
+
+#### ____________Other libraries which might be needed and change dir __________
+if (!require('here')) devtools::install_github("krlmlr/here")
+    library('here') #1 in the console updates everything from CRAN
+
+
+libraries <- c("readr","tidyverse", "openxlsx")
+lapply(libraries,require, character.only = TRUE)
+
+#sets wd in current location
+file_location <- here()
+setwd(file_location)
+
+#this is the complete library for gene names
+Gene_names <- read_tsv("./../Project_Datasets/HUMAN_9606_idmapping.dat",
+                       col_names = FALSE)
+
+#this excludes the pdf and xls files
+files <- list.files(path = "./../Project_Datasets/", pattern = 'xlsx')
+
+#creates variables for each file in dir
+for (i in files) {
+    assign(str_remove(i,".xlsx"), read.xlsx(paste0("./../Project_Datasets/",i))) 
+    
+    
+}
+
+```
+
+```{r Cleaning and filtering}
+
+#removing things found in chromatin and Large complexes
+`Established organellar Markers` <-  filter(`Established organellar Markers`, Compartment != "Large Protein Complex",) %>%
+    filter(!(.$Protein_ID %in% `MS protein ungrouped mean values`$Accession)) %>% left_join(`HeLa Proteome`,by = c("Protein_ID" = "Lead.Protein.ID"))
+
+`Established organellar Markers` <-`Established organellar Markers`[,c(1:5,8:9,16:21)]
+
+
+```
+
